@@ -1,6 +1,7 @@
 # snapcopy
 
-a lil script that screenshots text, runs tesseract OCR and copies text to clipboard.
+a lil script that screenshots text, runs tesseract OCR and copies text to clipboard.  
+maybe something like this already exists, but i don't care.
 
 ## installation
 

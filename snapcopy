@@ -2,5 +2,5 @@
 
 text=$(flameshot gui -r -s | tesseract stdin stdout)
 # text=$(import png:- | tesseract stdin stdout)
-notify-send -a copy "Copied: $text"
+notify-send -a snapcopy "Copied: $text"
 echo $text | xclip -sel c -r
