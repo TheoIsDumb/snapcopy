@@ -1,11 +1,44 @@
 #!/bin/bash
 
-maim -b 2 -s /tmp/screenshot.png
+function help {
+  cat << EOF
+Usage: snapcopy [OPTION]...
 
-if [[ $? -eq 0 ]]; then
-	text=$(tesseract /tmp/screenshot.png stdout)
-	notify-send -a snapcopy "Copied: $text"
-	xdg-open "https://duckduckgo.com/?q=$(echo $text | sed 's/ /+/g')"
-else
-	notify-send -a snapcopy "Selection cancelled."
-fi
+  [no flag]		  screenshot + OCR
+  --qr			  scan QR codes
+  -h/--help               display this help and exit
+
+EOF
+}
+
+
+function qr {
+	maim -b 2 -s /tmp/qr.png
+
+	if [[ $? -eq 0 ]]; then
+		link=$(zbarimg -q --raw /tmp/qr.png)
+		notify-send -a snapcopy "$link"
+		xdg-open $link
+	else
+		notify-send -a snapcopy "Selection cancelled."
+	fi
+}
+
+function text_extract {
+	maim -b 2 -s /tmp/screenshot.png
+
+	if [[ $? -eq 0 ]]; then
+		text=$(tesseract /tmp/screenshot.png stdout)
+		notify-send -a snapcopy "Copied: $text"
+		xdg-open "https://duckduckgo.com/?q=$(echo $text | sed 's/ /+/g')"
+	else
+		notify-send -a snapcopy "Selection cancelled."
+	fi
+}
+
+case $1 in
+	--qr) qr ;;
+	-h | --help) help ;;
+	*) text_extract ;;
+esac
+
