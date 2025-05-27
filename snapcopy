@@ -1,9 +1,11 @@
 #!/bin/bash
 
-text=$(flameshot gui -r -s | tesseract stdin stdout)
-# text=$(import png:- | tesseract stdin stdout)
-notify-send -a snapcopy "Copied: $text"
+maim -b 2 -s /tmp/screenshot.png
 
-# echo $text | xclip -sel c -r
-
-xdg-open "https://duckduckgo.com/?q=$(echo $text | sed 's/ /+/g')"
+if [[ $? -eq 0 ]]; then
+	text=$(tesseract /tmp/screenshot.png stdout)
+	notify-send -a snapcopy "Copied: $text"
+	xdg-open "https://duckduckgo.com/?q=$(echo $text | sed 's/ /+/g')"
+else
+	notify-send -a snapcopy "Selection cancelled."
+fi
